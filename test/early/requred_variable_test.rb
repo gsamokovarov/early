@@ -8,7 +8,7 @@ module Early
       var = RequiredVariable.new('FOO')
 
       err =
-        assert_raises MissingError do
+        assert_raises Error do
           var.apply
         end
 

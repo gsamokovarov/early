@@ -2,7 +2,7 @@ require 'test_helper'
 
 class EarlyTest < Test
   test 'applies environment variable requirements' do
-    assert_raises Early::MissingError do
+    assert_raises Early::Error do
       Early do
         require :FOO
       end
@@ -23,7 +23,7 @@ class EarlyTest < Test
     end
 
     ENV['RAILS_ENV'] = 'production'
-    assert_raises Early::MissingError do
+    assert_raises Early::Error do
       Early :production do
         require :FOO
       end
