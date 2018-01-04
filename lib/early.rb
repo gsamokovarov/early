@@ -9,9 +9,7 @@
 module Early
   VERSION = '0.1.0'
 
-  # Configuration is a set of required and optional environment variables that
-  # Early can apply.
-  class Configuration
+  class Configuration # :nodoc:
     attr_reader :variables
 
     def initialize(&block)
@@ -22,8 +20,10 @@ module Early
 
     private
 
-    def require(name)
-      @variables << RequiredVariable.new(name)
+    def require(*names)
+      names.each do |name|
+        @variables << RequiredVariable.new(name)
+      end
     end
 
     def default(name, value)
@@ -31,9 +31,7 @@ module Early
     end
   end
 
-  # DefaultVariable represents an optional ENV variable that can be omitted
-  # by the environment. However, a default value will be always be set.
-  class DefaultVariable
+  class DefaultVariable # :nodoc:
     attr_reader :name, :value
 
     def initialize(name, value)
@@ -44,15 +42,9 @@ module Early
     def apply
       ENV[name] ||= value
     end
-
-    def inspect
-      "ENV[#{name.inspect}] = #{value.inspect}"
-    end
   end
 
-  # RequiredVariable is an ENV variable that needs to be provided by the
-  # environment. If it's missing, 
-  class RequiredVariable
+  class RequiredVariable # :nodoc:
     attr_reader :name
 
     def initialize(name)
@@ -61,10 +53,6 @@ module Early
 
     def apply
       ENV.fetch(name) { raise Error, self }
-    end
-
-    def inspect
-      "ENV[#{name.inspect}]"
     end
   end
 
@@ -75,11 +63,13 @@ module Early
     def initialize(variable)
       @variable = variable
 
-      super("Variable #{variable.inspect} is missing")
+      super("Variable ENV[#{variable.name.inspect}] is missing")
     end
   end
 
-  # Env returns the early environment.
+  # Env returns the early environment. This is either the value of RAILS_ENV,
+  # RACK_ENV (in order) or the string <tt>'development'</tt> if neither of the
+  # aforementioned environment variables are present.
   def self.env
     ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
   end
@@ -93,8 +83,8 @@ end
 
 module Kernel
   # Early checks for environment variables availability. It provides a DSL that
-  # can enforce environment variable availability or set a default value. This
-  # will help you catch configuration errors earlier in your application runtime.
+  # can require or set a default value for an environment variable. This will
+  # help you catch configuration errors earlier in your application runtime.
   # Here is an example:
   #
   #   Early do
@@ -109,9 +99,9 @@ module Kernel
   #   Early::Error (Variable ENV["REDIS_URL"] is missing)
   #
   # Setting a default calls <tt>ENV['PROVIDER'] ||= 'generic'</tt> under the
-  # hood.  Every time you use <tt>ENV['PROVIDER']</tt> will give you
+  # hood. Every time you use <tt>ENV['PROVIDER']</tt> will give you
   # <tt>'generic'</tt>. No need to set it explicitly prior to the application
-  # run.1
+  # run.
   #
   # A quick note about how <tt>ENV</tt> works in Ruby. It is a plain
   # <tt>Object</tt> that is monkey patched to behave a bit like a hash. You can
@@ -119,7 +109,7 @@ module Kernel
   # variable with <tt>ENV['NAME'] = 'val'</tt>.
   #
   # Both of the operations explicitly require strings for the variable name and
-  # value.  Passing a symbol to <tt>ENV[:NAME]</tt> will result in an error. The
+  # value. Passing a symbol to <tt>ENV[:NAME]</tt> will result in an error. The
   # same will happen if you try to set a variable to any non-string value, like
   # <tt>ENV['NAME'] = :val</tt>. Early converts both the name and the value to
   # strings when it eventually deals with <tt>ENV</tt>, so you don't have to

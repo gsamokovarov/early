@@ -4,7 +4,7 @@ Early checks for environment variables availability, so you don't have to. Hook
 it early in your program to require or default a variable and then work with
 `ENV` like you normally would. Extremely useful for [Twelve-Factor apps][12f].
 
-## Installation
+## Usage
 
 Add this line to your application's Gemfile:
 
@@ -13,33 +13,50 @@ gem 'early'
 ```
 
 Afterwards make sure to call `Early` as early as possible in your application,
-to check the `ENV` variables, before you use them in your configuration layer.
-
-## Usage
+to check the `ENV` variables, before you use them in your configuration layer:
 
 ```ruby
 Early do
+  require :DATABASE_URL
   require :REDIS_URL
+
   default :PROVIDER, :generic
 end
 ```
 
-## Contributing
+The configuration will require the presence of `DATABASE_URL` and `REDIS_URL`
+and will raise `Early::Error` if any of them is missing. It will also set a
+default value to the env `PROVIDER`.
 
-Bug reports and pull requests are welcome on GitHub at
-https://github.com/gsamokovarov/early. This project is intended to be a safe,
-welcoming space for collaboration, and contributors are expected to adhere to
-the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+### Rails
+
+If you want to use early with Rails, you can store the early configuration in
+`config/early.rb`:
+
+
+```ruby
+Early do
+  require :ADMIN_NAME, :ADMIN_PASSWORD
+  require :MEETUP_API_KEY
+end
+```
+
+More importantly, require it in `config/boot.rb`, which is executed before the
+`config/application.rb` and `config/initializers` files:
+
+```ruby
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
+
+require 'bundler/setup' # Set up gems listed in the Gemfile.
+require 'bootsnap/setup'
+
+require_relative 'early' # 👈
+```
+
+This will make sure, that the rules you wanted early to enforce have been
+applied before any code in `config` has been run.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT
 License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the Early project’s codebases, issue trackers, chat
-rooms and mailing lists is expected to follow the [code of
-conduct](https://github.com/gsamokovarov/early/blob/master/CODE_OF_CONDUCT.md).
-
-[12f]: https://12factor.net
