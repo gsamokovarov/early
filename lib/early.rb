@@ -7,7 +7,7 @@
 # piece of code is hit, which may happen late in the program runtime an be easy
 # to miss.
 module Early
-  VERSION = '0.1.0'
+  VERSION = '0.1.1'
 
   class Configuration # :nodoc:
     attr_reader :variables

@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'Checks for environment variables early in your program.'
   spec.description   = 'Checks for environment variables early in your program.'
-  spec.homepage      = 'https://github.com/gsamokovarov'
+  spec.homepage      = 'https://github.com/gsamokovarov/early'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
