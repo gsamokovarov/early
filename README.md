@@ -9,13 +9,15 @@ it early in your program to require or default a variable and then work with
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'early'
+gem 'early', require: false
 ```
 
-Afterwards make sure to call `Early` as early as possible in your application,
+Afterwards, make sure to call `Early` as early as possible in your application,
 to check the `ENV` variables, before you use them in your configuration layer:
 
 ```ruby
+require 'early'
+
 Early do
   require :DATABASE_URL
   require :REDIS_URL
@@ -35,6 +37,8 @@ If you want to use early with Rails, you can store the early configuration in
 
 
 ```ruby
+require 'early'
+
 Early do
   require :ADMIN_NAME, :ADMIN_PASSWORD
   require :MEETUP_API_KEY
