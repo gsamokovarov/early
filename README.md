@@ -64,3 +64,5 @@ applied before any code in `config` has been run.
 
 The gem is available as open source under the terms of the [MIT
 License](https://opensource.org/licenses/MIT).
+
+[12f]: https://12factor.net
