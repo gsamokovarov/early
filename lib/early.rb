@@ -68,8 +68,8 @@ module Early
   end
 
   # Env returns the early environment. This is either the value of RAILS_ENV,
-  # RACK_ENV (in order) or the string <tt>'development'</tt> if neither of the
-  # aforementioned environment variables are present.
+  # RACK_ENV (in that order) or the string <tt>'development'</tt> if neither of
+  # the aforementioned environment variables are present.
   def self.env
     ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
   end
@@ -79,22 +79,28 @@ module Early
   def self.apply(config)
     config.variables.each(&:apply)
   end
+
+  # Accessing environment variables as constants. Raises Early::Error if
+  # missing.
+  def self.const_missing(name)
+    RequiredVariable.new(name).apply
+  end
 end
 
 module Kernel
+  module_function
+
   # Early checks for environment variables availability. It provides a DSL that
   # can require or set a default value for an environment variable. This will
   # help you catch configuration errors earlier in your application runtime.
   # Here is an example:
   #
-  #   Early do
-  #     require :REDIS_URL
-  #     default :PROVIDER, :generic
-  #   end
+  #   Early do require :REDIS_URL default :PROVIDER, :generic end
   #
-  # Calling <tt>require :REDIS_URL</tt> will fail if <tt>ENV['REDIS_URL']</tt> is
-  # <tt>nil</tt>, which means that it wasn't provided, before running the current
-  # application. The error will give you information about the missing variable:
+  # Calling <tt>require :REDIS_URL</tt> will fail if <tt>ENV['REDIS_URL']</tt>
+  # is <tt>nil</tt>, which means that it wasn't provided, before running the
+  # current application. The error will give you information about the missing
+  # variable:
   #
   #   Early::Error (Variable ENV["REDIS_URL"] is missing)
   #
@@ -114,9 +120,7 @@ module Kernel
   # <tt>ENV['NAME'] = :val</tt>. Early converts both the name and the value to
   # strings when it eventually deals with <tt>ENV</tt>, so you don't have to
   # worry about it.
-  def Early(*envs, &block)
-    config = Early::Configuration.new(&block)
-
+  def Early(*envs, &block) config = Early::Configuration.new(&block)
     if envs.empty? || envs.find { |e| Early.env == e.to_s }
       Early.apply(config)
     end
