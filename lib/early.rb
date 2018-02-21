@@ -120,7 +120,8 @@ module Kernel
   # <tt>ENV['NAME'] = :val</tt>. Early converts both the name and the value to
   # strings when it eventually deals with <tt>ENV</tt>, so you don't have to
   # worry about it.
-  def Early(*envs, &block) config = Early::Configuration.new(&block)
+  def Early(*envs, &block)
+    config = Early::Configuration.new(&block)
     if envs.empty? || envs.find { |e| Early.env == e.to_s }
       Early.apply(config)
     end
