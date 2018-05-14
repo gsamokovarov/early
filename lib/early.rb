@@ -111,8 +111,8 @@ module Kernel
   #
   # A quick note about how <tt>ENV</tt> works in Ruby. It is a plain
   # <tt>Object</tt> that is monkey patched to behave a bit like a hash. You can
-  # get an variable with <tt>ENV['NAME']</tt> and you can set an environment
-  # variable with <tt>ENV['NAME'] = 'val'</tt>.
+  # get a variable with <tt>ENV['NAME']</tt> and you can set a variable with
+  # <tt>ENV['NAME'] = 'val'</tt>.
   #
   # Both of the operations explicitly require strings for the variable name and
   # value. Passing a symbol to <tt>ENV[:NAME]</tt> will result in an error. The
