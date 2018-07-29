@@ -29,6 +29,12 @@ module Early
     def default(name, value)
       @variables << DefaultVariable.new(name, value)
     end
+
+    def travis(path = '.travis.yml', except: %w(DATABASE_URL))
+      Kernel.require "early/travis"
+
+      Travis.from_config(path).apply(except: except)
+    end
   end
 
   class DefaultVariable # :nodoc:
