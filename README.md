@@ -60,6 +60,19 @@ require_relative 'early' # 👈
 This will make sure, that the rules you wanted early to enforce have been
 applied before any code in `config` has been run.
 
+### Travis
+
+If you are using Travis CI, you can auto-load the environment variables
+specified in `.travis.yml` with:
+
+```ruby
+require 'early'
+
+Early :development do
+  travis
+end
+```
+
 ## License
 
 The gem is available as open source under the terms of the [MIT
