@@ -69,4 +69,15 @@ class EarlyTest < Test
 
     assert_equal var, err.variable
   end
+
+  test 'can set environment variables from a travis config' do
+    config = Early::Configuration.new do
+      travis Pathname.new("#{__dir__}/fixtures/.travis.yml")
+    end
+
+    assert_equal 'test', ENV['RAILS_ENV']
+    assert_equal 'admin', ENV['ADMIN_NAME']
+    assert_equal 'admin', ENV['ADMIN_PASSWORD']
+    assert_equal 'test', ENV['MEETUP_API_KEY']
+  end
 end

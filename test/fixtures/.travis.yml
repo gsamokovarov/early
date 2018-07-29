@@ -1,0 +1,16 @@
+language: ruby
+
+rvm:
+  - 2.5.0
+
+script:
+  - bundle exec rails db:setup test
+
+env:
+  global:
+    - TZ=Europe/Sofia
+    - RAILS_ENV=test
+    - ADMIN_NAME=admin
+    - ADMIN_PASSWORD=admin
+    - MEETUP_API_KEY=test
+    - DATABASE_URL="postgres://postgres@localhost/banitsa_test"
