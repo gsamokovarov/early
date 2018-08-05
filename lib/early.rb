@@ -30,7 +30,7 @@ module Early
       @variables << DefaultVariable.new(name, value)
     end
 
-    def travis(path = '.travis.yml', except: %w(DATABASE_URL))
+    def travis(path = '.travis.yml', except: %w(DATABASE_URL RAILS_ENV))
       Kernel.require "early/travis"
 
       Travis.from_config(path).apply(except: except)

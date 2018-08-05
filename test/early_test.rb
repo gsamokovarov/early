@@ -75,9 +75,24 @@ class EarlyTest < Test
       travis Pathname.new("#{__dir__}/fixtures/.travis.yml")
     end
 
-    assert_equal 'test', ENV['RAILS_ENV']
     assert_equal 'admin', ENV['ADMIN_NAME']
     assert_equal 'admin', ENV['ADMIN_PASSWORD']
     assert_equal 'test', ENV['MEETUP_API_KEY']
+  end
+
+  test 'travis does not loat RAILS_ENV' do
+    config = Early::Configuration.new do
+      travis Pathname.new("#{__dir__}/fixtures/.travis.yml")
+    end
+
+    assert ENV['RAILS_ENV'].nil?
+  end
+
+  test 'travis does not loat DATABASE_URL' do
+    config = Early::Configuration.new do
+      travis Pathname.new("#{__dir__}/fixtures/.travis.yml")
+    end
+
+    assert ENV['DATABASE_URL'].nil?
   end
 end
