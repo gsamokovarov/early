@@ -7,7 +7,7 @@
 # piece of code is hit, which may happen late in the program runtime an be easy
 # to miss.
 module Early
-  VERSION = '0.3.1'
+  VERSION = '0.4.0'
 
   class Configuration # :nodoc:
     attr_reader :variables
@@ -26,8 +26,8 @@ module Early
       end
     end
 
-    def default(name, value)
-      @variables << DefaultVariable.new(name, value)
+    def default(name, value, **args)
+      @variables << DefaultVariable.new(name, value, **args)
     end
 
     def travis(path = '.travis.yml', except: %w(DATABASE_URL RAILS_ENV))
@@ -40,9 +40,23 @@ module Early
   class DefaultVariable # :nodoc:
     attr_reader :name, :value
 
-    def initialize(name, value)
+    BOOL_MAP = {
+      'true' => true,
+      'false' => false,
+      '1' => true,
+      '0' => false
+    }
+
+    def initialize(name, value, type: nil)
       @name = String(name)
-      @value = String(value)
+      @value = case type
+               when :integer
+                 value.to_i
+               when :bool
+                 BOOL_MAP[String(value)]
+               else
+                 String(value)
+               end
     end
 
     def apply

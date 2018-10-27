@@ -50,6 +50,17 @@ class EarlyTest < Test
     assert_equal '42', config.variables[1].value
   end
 
+  test 'supports typecasting on default' do
+    config = Early::Configuration.new do
+      default :FOO, '42', type: :integer
+      default :BAR, 'true', type: :bool
+    end
+
+    assert_equal 2, config.variables.count
+    assert_equal 42, config.variables[0].value
+    assert_equal true, config.variables[1].value
+  end
+
   test 'applies a default value' do
     assert_nil ENV['FOO']
 

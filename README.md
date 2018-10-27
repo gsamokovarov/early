@@ -23,12 +23,15 @@ Early do
   require :REDIS_URL
 
   default :PROVIDER, :generic
+  default :USE_TEST, ENV['RAILS_ENV'].eql?('test'), type: :bool
 end
 ```
 
 The configuration will require the presence of `DATABASE_URL` and `REDIS_URL`
 and will raise `Early::Error` if any of them is missing. It will also set a
-default value to the env `PROVIDER`.
+default value to the env `PROVIDER` and `USE_TEST` will be converted to `boolean` instead of string
+
+Typecast supported options are: `:bool` and `:integer`
 
 ### Rails
 
