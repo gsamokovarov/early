@@ -101,7 +101,10 @@ module Kernel
   # help you catch configuration errors earlier in your application runtime.
   # Here is an example:
   #
-  #   Early do require :REDIS_URL default :PROVIDER, :generic end
+  #   Early do
+  #     require :REDIS_URL
+  #     default :PROVIDER, :generic
+  #   end
   #
   # Calling <tt>require :REDIS_URL</tt> will fail if <tt>ENV['REDIS_URL']</tt>
   # is <tt>nil</tt>, which means that it wasn't provided, before running the
